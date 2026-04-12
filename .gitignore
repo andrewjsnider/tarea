@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 *.rbc
 capybara-*.html
 .rspec
@@ -67,3 +68,15 @@ yarn-debug.log*
 /storage/*
 !/storage/.keep
 /public/uploads
+=======
+/.bundle/
+/doc/
+/log/*.log
+/pkg/
+/tmp/
+/test/dummy/db/*.sqlite3
+/test/dummy/db/*.sqlite3-*
+/test/dummy/log/*.log
+/test/dummy/storage/
+/test/dummy/tmp/
+>>>>>>> 1e70a17 (First engine commit)
