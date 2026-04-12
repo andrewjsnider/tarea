@@ -4,6 +4,7 @@ module Tarea
 
     has_many :assignments, class_name: "Tarea::Assignment", dependent: :destroy
     has_many :attempts, class_name: "Tarea::Attempt", dependent: :destroy
+    has_many :prompts, class_name: "Tarea::Prompt", dependent: :destroy
 
     enum :kind, {
       reading_comprehension: 0,

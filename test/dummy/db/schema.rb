@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_04_12_190042) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_12_200434) do
   create_table "tarea_activities", force: :cascade do |t|
     t.string "title"
     t.integer "kind", null: false
@@ -55,7 +55,38 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_12_190042) do
     t.index ["user_key", "assignment_id"], name: "index_tarea_attempts_on_user_key_and_assignment_id"
   end
 
+  create_table "tarea_prompts", force: :cascade do |t|
+    t.integer "activity_id", null: false
+    t.integer "kind", null: false
+    t.text "text", null: false
+    t.json "options", default: [], null: false
+    t.json "answer_key", default: [], null: false
+    t.integer "position", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["activity_id", "position"], name: "index_tarea_prompts_on_activity_id_and_position", unique: true
+    t.index ["activity_id"], name: "index_tarea_prompts_on_activity_id"
+    t.index ["kind"], name: "index_tarea_prompts_on_kind"
+  end
+
+  create_table "tarea_responses", force: :cascade do |t|
+    t.integer "attempt_id", null: false
+    t.integer "prompt_id", null: false
+    t.json "response", default: {}, null: false
+    t.boolean "correct"
+    t.integer "points_earned", default: 0, null: false
+    t.datetime "answered_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["attempt_id", "prompt_id"], name: "index_tarea_responses_on_attempt_id_and_prompt_id", unique: true
+    t.index ["attempt_id"], name: "index_tarea_responses_on_attempt_id"
+    t.index ["prompt_id"], name: "index_tarea_responses_on_prompt_id"
+  end
+
   add_foreign_key "tarea_assignments", "tarea_activities", column: "activity_id"
   add_foreign_key "tarea_attempts", "tarea_activities", column: "activity_id"
   add_foreign_key "tarea_attempts", "tarea_assignments", column: "assignment_id"
+  add_foreign_key "tarea_prompts", "tarea_activities", column: "activity_id"
+  add_foreign_key "tarea_responses", "tarea_attempts", column: "attempt_id"
+  add_foreign_key "tarea_responses", "tarea_prompts", column: "prompt_id"
 end

@@ -5,6 +5,8 @@ module Tarea
     belongs_to :activity, class_name: "Tarea::Activity"
     belongs_to :assignment, class_name: "Tarea::Assignment", optional: true
 
+    has_many :responses, class_name: "Tarea::Response", dependent: :destroy
+
     enum :status, {
       in_progress: 0,
       completed: 1,
