@@ -2,6 +2,8 @@ PATH
   remote: .
   specs:
     tarea (0.1.0)
+      haml
+      haml-rails
       rails (>= 7.0.8.4)
 
 GEM
@@ -84,6 +86,15 @@ GEM
       railties (>= 6.1.0)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    haml (7.2.0)
+      temple (>= 0.8.2)
+      thor
+      tilt
+    haml-rails (3.0.0)
+      actionpack (>= 5.1)
+      activesupport (>= 5.1)
+      haml (>= 4.0.6)
+      railties (>= 5.1)
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
     loofah (2.22.0)
@@ -153,7 +164,9 @@ GEM
       activesupport (>= 6.1)
       sprockets (>= 3.0.0)
     sqlite3 (1.7.3-x86_64-darwin)
+    temple (0.10.4)
     thor (1.5.0)
+    tilt (2.7.0)
     timeout (0.4.1)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
