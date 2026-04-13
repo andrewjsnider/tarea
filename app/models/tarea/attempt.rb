@@ -35,5 +35,9 @@ module Tarea
       answered_prompt_ids = responses.select(:prompt_id)
       activity.prompts.where.not(id: answered_prompt_ids).order(:position).first
     end
+
+    def answered_prompt?(prompt)
+      responses.exists?(prompt_id: prompt.id)
+    end
   end
 end

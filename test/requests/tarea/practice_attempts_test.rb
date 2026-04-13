@@ -36,10 +36,6 @@ module Tarea
       )
     end
 
-    def current_user
-      @user
-    end
-
     def test_show_creates_attempt_and_renders_first_prompt
       get "/tarea/practice/#{@activity.id}"
 
@@ -65,7 +61,7 @@ module Tarea
       assert_equal attempt.id, Tarea::Attempt.find_by(user_key: @user.id.to_s, activity: @activity).id
     end
 
-    def test_create_response_submits_answer_and_renders_next_prompt
+    def test_create_response_submits_answer_and_shows_feedback
       get "/tarea/practice/#{@activity.id}"
       attempt = Tarea::Attempt.find_by(user_key: @user.id.to_s, activity: @activity)
 
@@ -76,10 +72,47 @@ module Tarea
 
       assert_response :success
       assert_equal 1, attempt.reload.responses.count
+      assert_match @prompt_1.text, response.body
+      assert_match "Correct", response.body
+      assert_match "Next", response.body
+    end
+
+    def test_advance_moves_to_next_prompt
+      get "/tarea/practice/#{@activity.id}"
+
+      post "/tarea/practice/#{@activity.id}/responses", params: {
+        prompt_id: @prompt_1.id,
+        submitted_answer: "wants"
+      }
+
+      post "/tarea/practice/#{@activity.id}/advance"
+
+      assert_response :success
       assert_match @prompt_2.text, response.body
     end
 
-    def test_create_response_finalizes_attempt_when_last_prompt_answered
+    def test_final_answer_shows_finish_before_completion
+      get "/tarea/practice/#{@activity.id}"
+
+      post "/tarea/practice/#{@activity.id}/responses", params: {
+        prompt_id: @prompt_1.id,
+        submitted_answer: "wants"
+      }
+
+      post "/tarea/practice/#{@activity.id}/advance"
+
+      post "/tarea/practice/#{@activity.id}/responses", params: {
+        prompt_id: @prompt_2.id,
+        submitted_answer: "a professor"
+      }
+
+      assert_response :success
+      assert_match @prompt_2.text, response.body
+      assert_match "Correct", response.body
+      assert_match "Finish", response.body
+    end
+
+    def test_finish_after_last_prompt_renders_complete
       get "/tarea/practice/#{@activity.id}"
       attempt = Tarea::Attempt.find_by(user_key: @user.id.to_s, activity: @activity)
 
@@ -88,26 +121,18 @@ module Tarea
         submitted_answer: "wants"
       }
 
+      post "/tarea/practice/#{@activity.id}/advance"
+
       post "/tarea/practice/#{@activity.id}/responses", params: {
         prompt_id: @prompt_2.id,
         submitted_answer: "a professor"
       }
 
+      post "/tarea/practice/#{@activity.id}/advance"
+
       assert_response :success
       assert_equal "completed", attempt.reload.status
       assert_match "Practice complete", response.body
-    end
-
-    def test_create_response_shows_feedback
-      get "/tarea/practice/#{@activity.id}"
-
-      post "/tarea/practice/#{@activity.id}/responses", params: {
-        prompt_id: @prompt_1.id,
-        submitted_answer: "wants"
-      }
-
-      assert_response :success
-      assert_match "Correct", response.body
     end
   end
 end

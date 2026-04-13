@@ -9,19 +9,24 @@
 
 %p= @prompt.text
 
-- if @result.present?
+- if @feedback_mode
   - if @result.correct?
     %p Correct
   - else
     %p Incorrect
 
-= form_with url: assignment_responses_path(@assignment), method: :post, local: true do
-  = hidden_field_tag :prompt_id, @prompt.id
+  - button_text = @attempt.next_prompt.nil? ? "Finish" : "Next"
 
-  - @prompt.options.each do |option|
-    %div
-      %label
-        = radio_button_tag :submitted_answer, option
-        = option
+  = form_with url: advance_assignment_path(@assignment), method: :post, local: true do
+    = submit_tag button_text
+- else
+  = form_with url: assignment_responses_path(@assignment), method: :post, local: true do
+    = hidden_field_tag :prompt_id, @prompt.id
 
-  = submit_tag "Check Answer"
+    - @prompt.options.each do |option|
+      %div
+        %label
+          = radio_button_tag :submitted_answer, option
+          = option
+
+    = submit_tag "Check Answer"

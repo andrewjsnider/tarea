@@ -89,5 +89,12 @@ module Tarea
 
       assert_nil @attempt.reload.next_prompt
     end
+
+    def test_answered_prompt_returns_true_when_prompt_has_response
+      FactoryBot.create(:tarea_response, attempt: @attempt, prompt: @prompt_1)
+
+      assert_equal true, @attempt.answered_prompt?(@prompt_1)
+      assert_equal false, @attempt.answered_prompt?(@prompt_2)
+    end
   end
 end

@@ -27,6 +27,15 @@ module Tarea
 
       Tarea::Attempts::Finalize.call(attempt: @attempt)
       @attempt.reload
+      @feedback_mode = true
+
+      render :show
+    end
+
+    def advance
+      @assignment = Tarea::Assignment.find(params[:id])
+      @activity = @assignment.activity
+      @attempt = find_or_create_attempt
       @prompt = @attempt.next_prompt
 
       if @prompt.nil?
@@ -42,9 +51,9 @@ module Tarea
       Tarea::Attempt.where(
         user_key: current_user.id.to_s,
         activity: @activity,
-        assignment: @assignment,
-        status: Tarea::Attempt.statuses[:in_progress]
-      ).first_or_create!(
+        assignment: @assignment
+      ).order(created_at: :desc).first_or_create!(
+        status: :in_progress,
         started_at: Time.current
       )
     end
