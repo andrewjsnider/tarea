@@ -1,0 +1,27 @@
+%h1= @activity.title
+
+%p
+  Progress:
+  = "#{@attempt.answered_prompts_count}/#{@attempt.total_prompts_count}"
+
+%div
+  = simple_format(@activity.content)
+
+%p= @prompt.text
+
+- if @result.present?
+  - if @result.correct?
+    %p Correct
+  - else
+    %p Incorrect
+
+= form_with url: assignment_responses_path(@assignment), method: :post, local: true do
+  = hidden_field_tag :prompt_id, @prompt.id
+
+  - @prompt.options.each do |option|
+    %div
+      %label
+        = radio_button_tag :submitted_answer, option
+        = option
+
+  = submit_tag "Check Answer"

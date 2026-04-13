@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_04_12_200434) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_13_004652) do
   create_table "tarea_activities", force: :cascade do |t|
     t.string "title"
     t.integer "kind", null: false
@@ -18,6 +18,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_04_12_200434) do
     t.json "metadata", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "content"
     t.index ["kind"], name: "index_tarea_activities_on_kind"
   end
 
