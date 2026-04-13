@@ -10,9 +10,25 @@ ActiveRecord::Migrator.migrations_paths << File.expand_path("../db/migrate", __d
 require "rails/test_help"
 require "factory_bot_rails"
 
-module ActiveSupport
-  class TestCase
-    include FactoryBot::Syntax::Methods
+module Tarea
+  module TestCurrentUserStub
+    def stub_current_user(id = 123)
+      Tarea::ApplicationController.class_eval do
+        define_method(:current_user) do
+          Struct.new(:id).new(id)
+        end
+      end
+    end
   end
 end
 
+module ActiveSupport
+  class TestCase
+    include FactoryBot::Syntax::Methods
+    include Tarea::TestCurrentUserStub
+  end
+end
+
+class ActionDispatch::IntegrationTest
+  include Tarea::TestCurrentUserStub
+end

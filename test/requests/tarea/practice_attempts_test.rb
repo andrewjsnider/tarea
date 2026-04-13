@@ -4,12 +4,7 @@ module Tarea
   class PracticeAttemptsTest < ActionDispatch::IntegrationTest
     def setup
       @user = Struct.new(:id).new(123)
-
-      Tarea::ApplicationController.class_eval do
-        define_method(:current_user) do
-          Struct.new(:id).new(123)
-        end
-      end
+      stub_current_user(123)
 
       @activity = FactoryBot.create(
         :tarea_activity,
